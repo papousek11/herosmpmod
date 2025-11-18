@@ -1,5 +1,6 @@
 package net.apates.herosmpmod;
 
+import net.apates.herosmpmod.item.ModItems;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -47,9 +48,10 @@ public class HeroSmpMod {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-
         NeoForge.EVENT_BUS.register(this);
 
+
+        ModItems.register(modEventBus);
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
