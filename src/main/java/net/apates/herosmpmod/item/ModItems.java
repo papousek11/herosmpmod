@@ -15,7 +15,7 @@ public class ModItems {
 
 
     public static final DeferredItem<Item> STEEL_DUST = ITEMS.register("steel_dust",
-            () -> new Item(new Item.Properties().useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmppmod:steel_dust")))));
+            () -> new Item(new Item.Properties().useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:steel_dust")))));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
