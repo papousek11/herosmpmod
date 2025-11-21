@@ -16,10 +16,11 @@ public class ModCreativeTabs {
 
 
     public static final Supplier<CreativeModeTab> HERO_MOD_TAB = CREATIVE_MODE_TAB.register("hero_smp",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.STEEL_DUST.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.FIERY_SWORD.get()))
                     .title(Component.translatable("creative.heromodsmp.hero_items"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.STEEL_DUST);
+                        output.accept(ModItems.FIERY_SWORD);
 
                     })
                     .build());
