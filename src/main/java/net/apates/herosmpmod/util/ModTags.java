@@ -14,20 +14,22 @@ import net.minecraft.world.level.block.Block;
 public class ModTags {
 
     public  static class Blocks{
-    public static final TagKey<Block> IMCORRECT_FOR_HERO_SMP_TOOLS = createTag("incorrect_for_herosmp");
-
-
-
+        public static final TagKey<Block> INCORRECT_FOR_HERO_SMP_TOOLS = createTag("incorrect_for_herosmp");
         public static TagKey<Block> createTag(String name){
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath(HeroSmpMod.MOD_ID, name));
         }
+
+
+
     }
 
 
 
 
         public static class Items{
-            public static final TagKey<Item> TRANSFORMABLE_ITEMS = createTag("tranformable items");
+            public static final TagKey<Item> TRANSFORMABLE_ITEMS = createTag("tranformable_items");
+            public static final TagKey<Item> HERO_REPAIR_ITEMS = createTag("hero_repair_items");
+
 
             public static TagKey<Item> createTag(String name){
                 return ItemTags.create(ResourceLocation.fromNamespaceAndPath(HeroSmpMod.MOD_ID, name));
