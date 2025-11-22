@@ -1,5 +1,7 @@
 {
   "item.herosmpmod.steel_dust": "Steel Dust",
   "item.herosmpmod.fiery_sword": "Fiery Sword",
-  "creative.heromodsmp.hero_items": "Hero SMP Mod"
+  "creative.heromodsmp.hero_items": "Hero SMP Mod",
+  "tooltip.herosmpmod.fiery_sword.tooltip": "Ability: Fire Circle \nWhen Held: gives Fire resistance \nFire Aspect IV"
+
 }

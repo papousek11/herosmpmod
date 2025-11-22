@@ -2,6 +2,7 @@ package net.apates.herosmpmod.item;
 
 import net.apates.herosmpmod.HeroSmpMod;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -9,13 +10,17 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.awt.*;
 
 public class ModItems {
 
@@ -71,7 +76,12 @@ public class ModItems {
 
                     return super.hurtEnemy(stack, target, attacker);
                 }
-
+                @Override
+                public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
+                    , TooltipFlag tooltipFlag){
+                    TooltipComponent.add(Component.translatable("tooltip.herosmpmod.fiery_sword.tooltip"));
+                    super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
+                }
             });
 
 
