@@ -5,6 +5,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -82,7 +84,14 @@ public class ModItems {
                     TooltipComponent.add(Component.translatable("tooltip.herosmpmod.fiery_sword.tooltip"));
                     super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
                 }
-            });
+                @Override
+                public InteractionResult use(Level level, Player player, InteractionHand hand) {
+
+
+
+                }
+
+                });
 
 
     public static void register(IEventBus eventBus){
