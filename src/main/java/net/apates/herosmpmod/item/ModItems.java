@@ -34,13 +34,14 @@ public class ModItems {
 
 
     public static final DeferredItem<SwordItem> FIERY_SWORD = ITEMS.register("fiery_sword",
-            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, 3f, new Item.Properties()
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, 0f, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:fiery_sword")))){
-
-
+                public boolean is_charded_1 = true;
+                public int temp;
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
                     stack.setDamageValue(-1);
+
                     return false; // hides the durability bar
                 }
                 @Override
@@ -51,6 +52,15 @@ public class ModItems {
                     // jede to kazdej tick muze bejt performance problem
                     //en: runs every single tick may be a performance problem
 
+                    if(is_charded_1 == false){
+                        temp = temp + 1;
+                        System.out.println(temp / 20);
+                        if(temp == 400){
+
+                            is_charded_1 = true;
+                            temp = 0;
+                        }
+                    }
                     // na servu
                     //en: runs only on sever
                     if (level.isClientSide) return;
@@ -84,12 +94,17 @@ public class ModItems {
                     TooltipComponent.add(Component.translatable("tooltip.herosmpmod.fiery_sword.tooltip"));
                     super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
                 }
-                @Override
+               @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
 
+                    if(is_charded_1 == true){
+                        System.out.println("baller");
+                        is_charded_1 = false;
 
+                    }
 
-                }
+                   return null;
+               }
 
                 });
 
