@@ -1,0 +1,7 @@
+✅ 6. Enforcing server-side using DistExecutor (not preferred)
+
+You can do this, but NeoForge recommends logic-based checks instead:
+
+DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
+    // server only
+});

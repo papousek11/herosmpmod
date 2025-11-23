@@ -1,6 +1,7 @@
 package net.apates.herosmpmod.item;
 
 import net.apates.herosmpmod.HeroSmpMod;
+import net.apates.herosmpmod.abilities.Fire;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -61,6 +63,11 @@ public class ModItems {
                             temp = 0;
                         }
                     }
+                    else{
+
+
+
+                    }
                     // na servu
                     //en: runs only on sever
                     if (level.isClientSide) return;
@@ -98,7 +105,7 @@ public class ModItems {
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
 
                     if(is_charded_1 == true){
-                        System.out.println("baller");
+                        Fire.ohen();
                         is_charded_1 = false;
 
                     }
