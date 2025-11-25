@@ -40,6 +40,7 @@ public class ModItems {
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:fiery_sword")))){
                 public boolean is_charded_1 = true;
                 public int temp;
+                public boolean temp2 = false;
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
                     stack.setDamageValue(-1);
@@ -53,7 +54,12 @@ public class ModItems {
 
                     // jede to kazdej tick muze bejt performance problem
                     //en: runs every single tick may be a performance problem
-
+                    if(temp2){
+                        if (!level.isClientSide() && entity instanceof Player player) {
+                            Fire.handleServer(player);
+                            temp2 =false;
+                        }
+                    }
                     if(is_charded_1 == false){
                         temp = temp + 1;
                         System.out.println(temp / 20);
@@ -105,7 +111,8 @@ public class ModItems {
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
 
                     if(is_charded_1 == true){
-                        Fire.ohen();
+                        //Fire.ohen();
+                        temp2 = true;
                         is_charded_1 = false;
 
                     }
