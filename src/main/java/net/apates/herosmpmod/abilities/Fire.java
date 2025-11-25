@@ -39,13 +39,26 @@ public class Fire {
         double px2 = player2.getX();
         double pz2 = player2.getZ();
 
-        BlockPos pos = BlockPos.containing(px2, player2.getY(), pz2);
-        if (level.getBlockState(pos).isAir() &&
-                level.getBlockState(pos.below()).isSolid()) {
+        BlockPos pos = BlockPos.containing(px2 -2, player2.getY(), pz2 - 2);
+        int temp = pos.getY();
+        double tempx = pos.getX() ;
+        double tempz = pos.getZ() ;
+        for(int i = 0; i < 10;i = i +1){
+            for(int y = 0; y < 10;y++){
+                System.out.println(y + " y");
+                //if (level.getBlockState(pos).isAir() &&
+                      //  level.getBlockState(pos.below()).isSolid()) {
 
-            level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 20, 10);
 
+                    pos = BlockPos.containing(tempx +i/2, temp, tempz +y/2);
+                    System.out.println(pos);
+                    level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 20, 10);
+
+               // }
+            }
         }
+
+
 
 
 
