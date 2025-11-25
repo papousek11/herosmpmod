@@ -120,7 +120,8 @@ public class ModItems {
                    return null;
                }
 
-                });
+            }
+    );
 
 
     public static void register(IEventBus eventBus){
