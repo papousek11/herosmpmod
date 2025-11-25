@@ -49,7 +49,7 @@ public class Fire {
 
 
 
-    for(int x = -1; x < 4; x++) {
+    for(int x = -2; x < 4; x++) {
         for (int i = 0; i < 16; i = i + 1) {
             for (int y = 0; y < 16; y++) {
                 //System.out.println(x + "toto x");

@@ -2,6 +2,7 @@ package net.apates.herosmpmod.item;
 
 import net.apates.herosmpmod.HeroSmpMod;
 import net.apates.herosmpmod.abilities.Fire;
+import net.apates.herosmpmod.huds.FireSwordHud;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -36,7 +37,7 @@ public class ModItems {
 
 
     public static final DeferredItem<SwordItem> FIERY_SWORD = ITEMS.register("fiery_sword",
-            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, 0f, new Item.Properties()
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, 1, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:fiery_sword")))){
                 public boolean is_charded_1 = true;
                 public int temp;
@@ -62,6 +63,8 @@ public class ModItems {
                     }
                     if(is_charded_1 == false){
                         temp = temp + 1;
+                        FireSwordHud.bringus(false);
+                        FireSwordHud.john_bringus(temp/20);
                         System.out.println(temp / 20);
                         if(temp == 400){
 
@@ -70,7 +73,7 @@ public class ModItems {
                         }
                     }
                     else{
-
+                        FireSwordHud.bringus(true);
 
 
                     }
@@ -82,10 +85,11 @@ public class ModItems {
                     if (entity instanceof Player player) {
                         boolean isInMainHand = player.getMainHandItem() == stack;
                         if(isInMainHand){
+                            FireSwordHud.ability_cas_zacal(true);
                             player.addEffect(new MobEffectInstance(
                                     MobEffects.FIRE_RESISTANCE,0,1
                             ));
-                        }
+                        }else{FireSwordHud.ability_cas_zacal(false);}
 
                     }
                 }
