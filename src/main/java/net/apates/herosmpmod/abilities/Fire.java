@@ -5,6 +5,7 @@ import net.apates.herosmpmod.HeroSmpMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GrassBlock;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -39,25 +40,35 @@ public class Fire {
         double px2 = player2.getX();
         double pz2 = player2.getZ();
 
-        BlockPos pos = BlockPos.containing(px2 -2, player2.getY(), pz2 - 2);
+        BlockPos pos = BlockPos.containing(px2 -4, player2.getY(), pz2 - 4);
         int temp = pos.getY();
         double tempx = pos.getX() ;
         double tempz = pos.getZ() ;
-        for(int i = 0; i < 10;i = i +1){
-            for(int y = 0; y < 10;y++){
-                System.out.println(y + " y");
-                //if (level.getBlockState(pos).isAir() &&
-                      //  level.getBlockState(pos.below()).isSolid()) {
+        double offset_y = 0;
 
 
-                    pos = BlockPos.containing(tempx +i/2, temp, tempz +y/2);
+
+
+    for(int x = -1; x < 4; x++) {
+        for (int i = 0; i < 16; i = i + 1) {
+            for (int y = 0; y < 16; y++) {
+                //System.out.println(x + "toto x");
+                pos = BlockPos.containing(tempx + i / 2, temp+x , tempz + y / 2);
+                if (level.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).isAir()  &&
+                        level.getBlockState(pos.below()).isSolid()||
+                        level.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).is(Blocks.SHORT_GRASS)  &&
+                        level.getBlockState(pos.below()).isSolid()) {
+
+
+
                     System.out.println(pos);
                     level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 20, 10);
 
-               // }
+                }
+
             }
         }
-
+    }
 
 
 
@@ -76,6 +87,10 @@ public class Fire {
             level.addParticle(ParticleTypes.FLAME, px +5 , py, pz, 0, 5, 0);
             level.addParticle(ParticleTypes.FLAME, px +1 , py +1, pz +1, 1, 0, 1);
             level.addParticle(ParticleTypes.LAVA, px, py, pz, 0, 0, 0);
+            level.addParticle(ParticleTypes.FLAME, px, py, pz, 6, 8, 1);
+            level.addParticle(ParticleTypes.FLAME, px +8 , py, pz, 0, 5, 0);
+            level.addParticle(ParticleTypes.FLAME, px +13, py +1, pz +1, 1, 0, 1);
+            level.addParticle(ParticleTypes.LAVA, px, py, pz, 9, 0, 5) ;
 
 
 
@@ -83,11 +98,11 @@ public class Fire {
 
 
         }
-        double radius_fireball = 9.0;
-//        int points = 24; // smooth ring
 
 
-        // Only set fire if air above a solid block
+
+
+
 
 
 
