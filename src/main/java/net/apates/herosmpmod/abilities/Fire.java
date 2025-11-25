@@ -32,7 +32,8 @@ public class Fire {
 
 
         var player2 = mc.player;
-        var level = mc.level;
+        var level = player.level();
+        var level2 = mc.level;
 
 
 
@@ -54,15 +55,16 @@ public class Fire {
             for (int y = 0; y < 16; y++) {
                 //System.out.println(x + "toto x");
                 pos = BlockPos.containing(tempx + i / 2, temp+x , tempz + y / 2);
-                if (level.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).isAir()  &&
-                        level.getBlockState(pos.below()).isSolid()||
-                        level.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).is(Blocks.SHORT_GRASS)  &&
-                        level.getBlockState(pos.below()).isSolid()) {
+                if (level2.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).isAir()  &&
+                        level2.getBlockState(pos.below()).isSolid()||
+                        level2.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).is(Blocks.SHORT_GRASS)  &&
+                        level2.getBlockState(pos.below()).isSolid()) {
 
 
 
                     System.out.println(pos);
-                    level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 20, 10);
+                    level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 1,1);
+                    level2.setBlock(pos, Blocks.FIRE.defaultBlockState(), 1,1);
 
                 }
 

@@ -37,7 +37,7 @@ public class ModItems {
 
 
     public static final DeferredItem<SwordItem> FIERY_SWORD = ITEMS.register("fiery_sword",
-            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, 1, new Item.Properties()
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:fiery_sword")))){
                 public boolean is_charded_1 = true;
                 public int temp;
