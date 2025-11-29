@@ -17,6 +17,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+
 
 
 public class Fire {
@@ -60,10 +62,14 @@ public class Fire {
                         level2.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).is(Blocks.SNOW)  &&
                                 level2.getBlockState(pos.below()).isSolid()) {
 
-
-                    FireClientSide.client_hadling(player,pos);
+                    //theese are some stupid attems to call a client stuff from server it used to work on older
+                    //neoforge but it was change for sume reason
+                    //FireClientSide.client_hadling(player,pos);
                     // System.out.println(pos);
-                    level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 1,1);
+                    /*DistExecutor.safeRunWhenOn(Dist.CLIENT, () ->
+                            () -> FireClientSide.client_hadling(player, pos));*/
+                    //the flag system sends call to client automaticly
+                    level.setBlock(pos, Blocks.FIRE.defaultBlockState(), 3);
 
 
                 }
