@@ -21,6 +21,7 @@ public class ModCreativeTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.STEEL_DUST);
                         output.accept(ModItems.FIERY_SWORD);
+                        output.accept(ModItems.TITAN_HAMMA);
 
                     })
                     .build());

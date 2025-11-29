@@ -126,7 +126,18 @@ public class ModItems {
 
             }
     );
+    public static final DeferredItem<SwordItem> TITAN_HAMMA = ITEMS.register("titan_hama",
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
+                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:titan_hama"))))
+            {
+                @Override
+                public boolean isBarVisible(ItemStack stack) {
+                    stack.setDamageValue(-1);
 
+                    return false; // hides the durability bar
+                }
+            }
+    );
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
