@@ -12,7 +12,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.minecraft.client.Minecraft;
+//import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -24,16 +24,16 @@ public class Fire {
 
     public static void handleServer(Player player) {
         System.out.println("baller");
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null) return;
+        //Minecraft mc = Minecraft.getInstance();
+        //if (mc.player == null || mc.level == null) return;
 
 
 
 
 
-        var player2 = mc.player;
+        var player2 = player;
         var level = player.level();
-        var level2 = mc.level;
+        var level2 = player.level();
 
 
 
