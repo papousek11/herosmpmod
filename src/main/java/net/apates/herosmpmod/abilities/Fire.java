@@ -58,7 +58,9 @@ public class Fire {
                 if (level2.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).isAir()  &&
                         level2.getBlockState(pos.below()).isSolid()||
                         level2.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).is(Blocks.SHORT_GRASS)  &&
-                        level2.getBlockState(pos.below()).isSolid()) {
+                        level2.getBlockState(pos.below()).isSolid()||
+                        level2.getBlockState(BlockPos.containing(tempx + i / 2, temp +x , tempz + y / 2)).is(Blocks.SNOW)  &&
+                                level2.getBlockState(pos.below()).isSolid()) {
 
 
 
