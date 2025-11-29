@@ -13,6 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -130,11 +131,66 @@ public class ModItems {
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:titan_hama"))))
             {
+                boolean ability = true;
+                boolean charing =false;
+                int timer= 0;
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
                     stack.setDamageValue(-1);
 
                     return false; // hides the durability bar
+                }
+                @Override
+                public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+                    //stun palyer
+                    if(ability){
+                        charing = true;
+                        target.addEffect(new MobEffectInstance(
+                                MobEffects.MOVEMENT_SLOWDOWN,3*20,9999
+                        ));
+                        target.addEffect(new MobEffectInstance(
+                                MobEffects.BLINDNESS,3*20,9999
+                        ));
+                        target.addEffect(new MobEffectInstance(
+                                MobEffects.DARKNESS,3*20,9999
+                        ));
+
+                    }
+
+
+                    return super.hurtEnemy(stack, target, attacker);
+                }
+                @Override
+                public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected)
+                {
+                    if(charing){
+                        if(timer != 400){
+                            timer++;
+                        }
+                        else{
+                            ability = true;
+                        }
+                    }
+                    if (entity instanceof Player player) {
+                        boolean isInMainHand = player.getMainHandItem() == stack;
+                        if(isInMainHand){
+                            player.addEffect(new MobEffectInstance(
+                                    MobEffects.MOVEMENT_SLOWDOWN,0,1
+                            ));
+                        }
+
+
+                    }
+
+                }
+                @Override
+                public InteractionResult use(Level level, Player player, InteractionHand hand) {
+                    if(timer == 400){
+                        ability = true;
+                        timer = 0;
+                    }
+
+                    return null;
                 }
             }
     );
