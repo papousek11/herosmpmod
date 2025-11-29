@@ -30,7 +30,6 @@ public class Fire {
 
 
 
-//
         var player2 = player;
         var level = player.level();
         var level2 = player.level();
