@@ -133,6 +133,7 @@ public class ModItems {
             {
                 boolean ability = true;
                 boolean charing =false;
+                boolean activated = false;
                 int timer= 0;
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
@@ -143,7 +144,9 @@ public class ModItems {
                 @Override
                 public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
                     //stun palyer
-                    if(ability){
+                    if(activated){
+                        ability = false;
+                        activated = false;
                         charing = true;
                         target.addEffect(new MobEffectInstance(
                                 MobEffects.MOVEMENT_SLOWDOWN,3*20,9999
@@ -185,8 +188,8 @@ public class ModItems {
                 }
                 @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
-                    if(timer == 400){
-                        ability = true;
+                    if(ability){
+                        activated = true;
                         timer = 0;
                     }
 
