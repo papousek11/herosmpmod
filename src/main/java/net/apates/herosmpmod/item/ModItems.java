@@ -188,6 +188,7 @@ public class ModItems {
                 }
                 @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
+                    //I have no idea what im doing
                     if(ability){
                         activated = true;
                         timer = 0;
