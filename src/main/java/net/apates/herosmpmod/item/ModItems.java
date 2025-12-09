@@ -135,6 +135,13 @@ public class ModItems {
                 boolean charing =false;
                 boolean activated = false;
                 int timer= 0;
+
+                @Override
+                public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
+                        , TooltipFlag tooltipFlag){
+                    TooltipComponent.add(Component.translatable("tooltip.herosmpmod.titan_hama.tooltip"));
+                    super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
+                }
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
                     stack.setDamageValue(-1);

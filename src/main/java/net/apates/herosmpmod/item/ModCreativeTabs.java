@@ -22,6 +22,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.STEEL_DUST);
                         output.accept(ModItems.FIERY_SWORD);
                         output.accept(ModItems.TITAN_HAMMA);
+                        output.accept(ModItems.P_DAGGER);
 
                     })
                     .build());
