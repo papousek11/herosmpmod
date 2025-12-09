@@ -172,6 +172,7 @@ public class ModItems {
                         }
                         else{
                             ability = true;
+                            charing = false;
                         }
                     }
                     if (entity instanceof Player player) {
@@ -191,11 +192,20 @@ public class ModItems {
                     //I have no idea what im doing
                     if(ability){
                         activated = true;
+                        charing = true;
                         timer = 0;
                     }
 
                     return null;
                 }
+            }
+    );
+    public static final DeferredItem<SwordItem> P_DAGGER = ITEMS.register("poison_dagger",
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
+                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:poison_dagger"))))
+            {
+
+
             }
     );
 
