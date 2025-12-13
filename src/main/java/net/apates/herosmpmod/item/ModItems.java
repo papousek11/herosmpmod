@@ -234,7 +234,7 @@ public class ModItems {
                     //stun palyer
                     if(poison){
                         target.addEffect(new MobEffectInstance(
-                                MobEffects.POISON,3*20,9999
+                                MobEffects.POISON,5*20,2
                         ));
 
 
