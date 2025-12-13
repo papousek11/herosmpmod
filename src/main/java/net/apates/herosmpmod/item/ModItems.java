@@ -211,7 +211,18 @@ public class ModItems {
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:poison_dagger"))))
             {
+                @Override
+                public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
+                        , TooltipFlag tooltipFlag){
+                    TooltipComponent.add(Component.translatable("tooltip.herosmpmod.poison_dagger.tooltip"));
+                    super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
+                }
+                @Override
+                public boolean isBarVisible(ItemStack stack) {
+                    stack.setDamageValue(-1);
 
+                    return false; // hides the durability bar
+                }
 
             }
     );
