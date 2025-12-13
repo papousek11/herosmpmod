@@ -211,6 +211,12 @@ public class ModItems {
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:poison_dagger"))))
             {
+                boolean ability = true;
+                boolean charing =false;
+                boolean activated = false;
+                boolean poison= false;
+                int timer= 0;
+                int timer2 = 0;
                 @Override
                 public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
                         , TooltipFlag tooltipFlag){
@@ -223,7 +229,68 @@ public class ModItems {
 
                     return false; // hides the durability bar
                 }
+                @Override
+                public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+                    //stun palyer
+                    if(poison){
+                        target.addEffect(new MobEffectInstance(
+                                MobEffects.POISON,3*20,9999
+                        ));
 
+
+
+
+                    }
+
+
+                    return super.hurtEnemy(stack, target, attacker);
+                }
+                @Override
+                public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected)
+                {
+                    if(activated){
+                        if(timer2 != 20*5){
+                            timer2++;
+                            poison = true;
+                        }
+                        else{
+                            timer2 = 0;
+                            activated = false;
+                            poison = false;
+                            charing = true;
+                        }
+                    }
+                    if(charing){
+                        if(timer != 400){
+                            timer++;
+                        }
+                        else{
+                            ability = true;
+                            charing = false;
+                        }
+                    }
+                    if (entity instanceof Player player) {
+                        boolean isInMainHand = player.getMainHandItem() == stack;
+                        if(isInMainHand){
+
+                        }
+
+
+                    }
+
+                }
+                @Override
+                public InteractionResult use(Level level, Player player, InteractionHand hand) {
+                    //I have no idea what im doing
+                    if(ability){
+                        activated = true;
+                        //charing = true;
+                        timer = 0;
+                        timer2 = 0;
+                    }
+
+                    return null;
+                }
             }
     );
 
