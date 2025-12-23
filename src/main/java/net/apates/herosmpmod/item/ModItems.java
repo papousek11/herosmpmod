@@ -272,6 +272,7 @@ public class ModItems {
                     if (entity instanceof Player player) {
                         boolean isInMainHand = player.getMainHandItem() == stack;
                         if(isInMainHand){
+                            player.removeEffect(MobEffects.POISON);
 
                         }
 

@@ -7,6 +7,7 @@
   "creative.heromodsmp.hero_items": "Hero SMP Mod",
 
   "tooltip.herosmpmod.fiery_sword.tooltip": "Ability: Fire Circle \nWhen Held: gives Fire resistance \nFire Aspect IV",
-  "tooltip.herosmpmod.titan_hama.tooltip": "Ability: 3s stun on next hit \nWhen Held: applies slowness to user "
+  "tooltip.herosmpmod.titan_hama.tooltip": "Ability: 3s stun on next hit \nWhen Held: applies slowness to user ",
+  "tooltip.herosmpmod.poison_dagger": "Ability: Becomes poisonous for 5 sec. \nWhen Held: Negates all poison "
 
 }
