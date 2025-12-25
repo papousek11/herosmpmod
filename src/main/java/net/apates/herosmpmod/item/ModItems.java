@@ -294,7 +294,25 @@ public class ModItems {
                 }
             }
     );
+    public static final DeferredItem<SwordItem> krys464 = ITEMS.register("kris",
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
+                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:kris")))){
+                @Override
+                public boolean isBarVisible(ItemStack stack) {
+                    stack.setDamageValue(-1);
 
+                    return false; // hides the durability bar
+                }
+                @Override
+                public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
+                        , TooltipFlag tooltipFlag){
+                    TooltipComponent.add(Component.translatable("tooltip.herosmpmod.kris.tooltip"));
+                    super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
+                }
+
+            }
+    );
+    
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
 
