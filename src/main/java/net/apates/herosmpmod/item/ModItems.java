@@ -25,6 +25,9 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.nbt.CompoundTag;
 
 import java.awt.*;
 
@@ -40,9 +43,18 @@ public class ModItems {
     public static final DeferredItem<SwordItem> FIERY_SWORD = ITEMS.register("fiery_sword",
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:fiery_sword")))){
-                public boolean is_charded_1 = true;
-                public int temp;
-                public boolean temp2 = false;
+
+                private static final String NBT_CHARGED = "Charged";
+                private static final String NBT_COOLDOWN = "Cooldown";
+                private static final String NBT_TRIGGER = "Trigger";
+                private static CompoundTag getTag(ItemStack stack) {
+                    CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+                    return data != null ? data.copyTag() : new CompoundTag();
+                }
+
+                private static void saveTag(ItemStack stack, CompoundTag tag) {
+                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                }
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
                     stack.setDamageValue(-1);
@@ -56,21 +68,23 @@ public class ModItems {
 
                     // jede to kazdej tick muze bejt performance problem
                     //en: runs every single tick may be a performance problem
-                    if(temp2){
-                        if (!level.isClientSide() && entity instanceof Player player) {
+                    if (!level.isClientSide && entity instanceof Player player) {
+                        CompoundTag tag = getTag(stack);
+                        tag.putBoolean("Charged", false);
+                        saveTag(stack, tag);
+                        if (tag.getBoolean(NBT_TRIGGER)) {
                             Fire.handleServer(player);
-                            temp2 =false;
+                            tag.putBoolean(NBT_TRIGGER, false);
                         }
-                    }
-                    if(is_charded_1 == false){
-                        temp = temp + 1;
-                        FireSwordHud.bringus(false);
-                        FireSwordHud.john_bringus(temp/20);
-                        System.out.println(temp / 20);
-                        if(temp == 400){
 
-                            is_charded_1 = true;
-                            temp = 0;
+                        if (!tag.getBoolean(NBT_CHARGED)) {
+                            int cd = tag.getInt(NBT_COOLDOWN) + 1;
+                            tag.putInt(NBT_COOLDOWN, cd);
+
+                            if (cd >= 400) {
+                                tag.putBoolean(NBT_CHARGED, true);
+                                tag.putInt(NBT_COOLDOWN, 0);
+                            }
                         }
                     }
                     else{
@@ -115,14 +129,21 @@ public class ModItems {
                @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
 
-                    if(is_charded_1 == true){
-                        //Fire.ohen();
-                        temp2 = true;
-                        is_charded_1 = false;
+                   ItemStack stack = player.getItemInHand(hand);
 
-                    }
+                   if (!level.isClientSide) {
+                       CompoundTag tag = getTag(stack);
+                       tag.putBoolean("Charged", false);
+                       saveTag(stack, tag);
 
-                   return null;
+                       if (tag.getBoolean(NBT_CHARGED)) {
+                           tag.putBoolean(NBT_TRIGGER, true);
+                           tag.putBoolean(NBT_CHARGED, false);
+                           tag.putInt(NBT_COOLDOWN, 0);
+                       }
+                   }
+
+                   return InteractionResult.SUCCESS;
                }
 
             }
