@@ -150,8 +150,8 @@ public class ModItems {
     );
     public static final DeferredItem<SwordItem> TITAN_HAMMA = ITEMS.register("titan_hama",
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
-                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:titan_hama"))))
-            { private CompoundTag getTag(ItemStack stack) {
+                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:titan_hama")))) {
+                private CompoundTag getTag(ItemStack stack) {
                 CustomData data = stack.get(DataComponents.CUSTOM_DATA);
                 return data == null ? new CompoundTag() : data.copyTag();
             }
