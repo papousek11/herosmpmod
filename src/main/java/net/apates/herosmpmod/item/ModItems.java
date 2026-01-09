@@ -275,88 +275,152 @@ public class ModItems {
     );
     public static final DeferredItem<SwordItem> P_DAGGER = ITEMS.register("poison_dagger",
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
-                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:poison_dagger"))))
-            {
-                boolean ability = true;
-                boolean charing =false;
-                boolean activated = false;
-                boolean poison= false;
-                int timer= 0;
-                int timer2 = 0;
-                @Override
-                public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
-                        , TooltipFlag tooltipFlag){
-                    TooltipComponent.add(Component.translatable("tooltip.herosmpmod.poison_dagger.tooltip"));
-                    super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
+                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:poison_dagger")))) {
+
+                //just rawdoged this one
+                private CompoundTag getTag(ItemStack stack) {
+                    CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+                    return data == null ? new CompoundTag() : data.copyTag();
                 }
+
+                private void saveTag(ItemStack stack, CompoundTag tag) {
+                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                }
+
+                private boolean getAbility(ItemStack stack) {
+                    return getTag(stack).getBoolean("ability");
+                }
+
+                private void setAbility(ItemStack stack, boolean value) {
+                    CompoundTag tag = getTag(stack);
+                    tag.putBoolean("ability", value);
+                    saveTag(stack, tag);
+                }
+
+                private boolean getCharing(ItemStack stack) {
+                    return getTag(stack).getBoolean("charing");
+                }
+
+                private void setCharing(ItemStack stack, boolean value) {
+                    CompoundTag tag = getTag(stack);
+                    tag.putBoolean("charing", value);
+                    saveTag(stack, tag);
+                }
+
+                private boolean getActivated(ItemStack stack) {
+                    return getTag(stack).getBoolean("activated");
+                }
+
+                private void setActivated(ItemStack stack, boolean value) {
+                    CompoundTag tag = getTag(stack);
+                    tag.putBoolean("activated", value);
+                    saveTag(stack, tag);
+                }
+
+                private boolean getPoison(ItemStack stack) {
+                    return getTag(stack).getBoolean("poison");
+                }
+
+                private void setPoison(ItemStack stack, boolean value) {
+                    CompoundTag tag = getTag(stack);
+                    tag.putBoolean("poison", value);
+                    saveTag(stack, tag);
+                }
+
+                private int getTimer(ItemStack stack) {
+                    return getTag(stack).getInt("timer");
+                }
+
+                private void setTimer(ItemStack stack, int value) {
+                    CompoundTag tag = getTag(stack);
+                    tag.putInt("timer", value);
+                    saveTag(stack, tag);
+                }
+
+                private int getTimer2(ItemStack stack) {
+                    return getTag(stack).getInt("timer2");
+                }
+
+                private void setTimer2(ItemStack stack, int value) {
+                    CompoundTag tag = getTag(stack);
+                    tag.putInt("timer2", value);
+                    saveTag(stack, tag);
+                }
+
+                //ř (tetx)
+                @Override
+                public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                            java.util.List<Component> tooltip, TooltipFlag flag) {
+                    tooltip.add(Component.translatable("tooltip.herosmpmod.poison_dagger.tooltip"));
+                    super.appendHoverText(stack, context, tooltip, flag);
+                }
+
+
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
                     stack.setDamageValue(-1);
-
-                    return false; // hides the durability bar
+                    return false;
                 }
+
+                //skamboard
                 @Override
                 public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-                    //stun palyer
-                    if(poison){
+
+                    if (getPoison(stack)) {
                         target.addEffect(new MobEffectInstance(
-                                MobEffects.POISON,5*20,2
+                                MobEffects.POISON, 5 * 20, 2
                         ));
-
-
-
-
                     }
-
 
                     return super.hurtEnemy(stack, target, attacker);
                 }
+
+
                 @Override
-                public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected)
-                {
-                    if(activated){
-                        if(timer2 != 20*5){
-                            timer2++;
-                            poison = true;
-                        }
-                        else{
-                            timer2 = 0;
-                            activated = false;
-                            poison = false;
-                            charing = true;
-                        }
-                    }
-                    if(charing){
-                        if(timer != 400){
-                            timer++;
-                        }
-                        else{
-                            ability = true;
-                            charing = false;
+                public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+
+                    if (getActivated(stack)) {
+                        if (getTimer2(stack) != 20 * 5) {
+                            setTimer2(stack, getTimer2(stack) + 1);
+                            setPoison(stack, true);
+                        } else {
+                            setTimer2(stack, 0);
+                            setActivated(stack, false);
+                            setPoison(stack, false);
+                            setCharing(stack, true);
                         }
                     }
+                    //i would like to kill myself
+                    if (getCharing(stack)) {
+                        if (getTimer(stack) != 400) {
+                            setTimer(stack, getTimer(stack) + 1);
+                        } else {
+                            setAbility(stack, true);
+                            setCharing(stack, false);
+                        }
+                    }
+
                     if (entity instanceof Player player) {
                         boolean isInMainHand = player.getMainHandItem() == stack;
-                        if(isInMainHand){
+                        if (isInMainHand) {
                             player.removeEffect(MobEffects.POISON);
-
                         }
-
-
                     }
-
                 }
+
+
                 @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
-                    //I have no idea what im doing
-                    if(ability){
-                        activated = true;
-                        //charing = true;
-                        timer = 0;
-                        timer2 = 0;
+
+                    ItemStack stack = player.getItemInHand(hand);
+
+                    if (getAbility(stack)) {
+                        setActivated(stack, true);
+                        setTimer(stack, 0);
+                        setTimer2(stack, 0);
                     }
 
-                    return null;
+                    return InteractionResult.SUCCESS;
                 }
             }
     );
