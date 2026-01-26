@@ -41,113 +41,109 @@ public class ModItems {
 
 
     public static final DeferredItem<SwordItem> FIERY_SWORD = ITEMS.register("fiery_sword",
-            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
-                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:fiery_sword")))){
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3,
+                    new Item.Properties()
+                            .useItemDescriptionPrefix()
+                            .setId(ResourceKey.create(Registries.ITEM,
+                                    ResourceLocation.parse("herosmpmod:fiery_sword")))) {
 
                 private static final String NBT_CHARGED = "Charged";
                 private static final String NBT_COOLDOWN = "Cooldown";
                 private static final String NBT_TRIGGER = "Trigger";
-                private static CompoundTag getTag(ItemStack stack) {
+
+                private CompoundTag getTag(ItemStack stack) {
                     CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-                    return data != null ? data.copyTag() : new CompoundTag();
+                    return data == null ? new CompoundTag() : data.copyTag();
                 }
 
-                private static void saveTag(ItemStack stack, CompoundTag tag) {
+                private void saveTag(ItemStack stack, CompoundTag tag) {
                     stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
                 }
+
+                private void init(ItemStack stack) {
+                    CompoundTag tag = getTag(stack);
+                    if (!tag.contains(NBT_CHARGED)) {
+                        tag.putBoolean(NBT_CHARGED, true);
+                        tag.putInt(NBT_COOLDOWN, 0);
+                        tag.putBoolean(NBT_TRIGGER, false);
+                        saveTag(stack, tag);
+                    }
+                }
+
                 @Override
                 public boolean isBarVisible(ItemStack stack) {
-                    stack.setDamageValue(-1);
-
-                    return false; // hides the durability bar
+                    return false;
                 }
+                //skamboard
                 @Override
-
                 public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
-                    super.inventoryTick(stack, level, entity, slot, selected);
+                    if (!(entity instanceof Player player)) return;
 
-                    // jede to kazdej tick muze bejt performance problem
-                    //en: runs every single tick may be a performance problem
-                    if (!level.isClientSide && entity instanceof Player player) {
-                        CompoundTag tag = getTag(stack);
-                        tag.putBoolean("Charged", false);
-                        saveTag(stack, tag);
-                        if (tag.getBoolean(NBT_TRIGGER)) {
-                            Fire.handleServer(player);
-                            tag.putBoolean(NBT_TRIGGER, false);
-                        }
-
-                        if (!tag.getBoolean(NBT_CHARGED)) {
-                            int cd = tag.getInt(NBT_COOLDOWN) + 1;
-                            tag.putInt(NBT_COOLDOWN, cd);
-
-                            if (cd >= 400) {
-                                tag.putBoolean(NBT_CHARGED, true);
-                                tag.putInt(NBT_COOLDOWN, 0);
-                            }
-                        }
-                    }
-                    else{
+                    init(stack);
+                    //every time i rewrite this there are less and less comments
+                    // CLIENT (not tuff)
+                    if (level.isClientSide) {
+                        boolean inHand = player.getMainHandItem() == stack;
                         FireSwordHud.bringus(true);
-
-
+                        FireSwordHud.ability_cas_zacal(inHand);
+                        return;
                     }
-                    // na servu
-                    //en: runs only on sever
-                    if (level.isClientSide) return;
 
-                    //I hate java why doesn´t it work without the instance I hate this shit
-                    if (entity instanceof Player player) {
-                        boolean isInMainHand = player.getMainHandItem() == stack;
-                        if(isInMainHand){
-                            FireSwordHud.ability_cas_zacal(true);
-                            player.addEffect(new MobEffectInstance(
-                                    MobEffects.FIRE_RESISTANCE,0,1
-                            ));
-                        }else{FireSwordHud.ability_cas_zacal(false);}
+                    // SERVER (yipee)
+                    CompoundTag tag = getTag(stack);
 
+                    if (tag.getBoolean(NBT_TRIGGER)) {
+                        Fire.handleServer(player);
+                        tag.putBoolean(NBT_TRIGGER, false);
+                    }
+
+                    if (!tag.getBoolean(NBT_CHARGED)) {
+                        int cd = tag.getInt(NBT_COOLDOWN) + 1;
+                        tag.putInt(NBT_COOLDOWN, cd);
+                        if (cd >= 400) {
+                            tag.putBoolean(NBT_CHARGED, true);
+                            tag.putInt(NBT_COOLDOWN, 0);
+                        }
+                    }
+
+                    saveTag(stack, tag);
+
+                    if (player.getMainHandItem() == stack) {
+                        player.addEffect(new MobEffectInstance(
+                                MobEffects.FIRE_RESISTANCE, 1, 1));
                     }
                 }
 
                 @Override
                 public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-                    //why did the change it to tick from seconds it makes it so much more difficul
-                    //to make goddammit
-                    //btw sets target on fire for 8 sec (second time ticks)
-                    //why are they changing everything it is so hard to find new tutorials
-                    //and the docs suck
-                    target.setRemainingFireTicks(8*20);
-
+                    target.setRemainingFireTicks(8 * 20);
                     return super.hurtEnemy(stack, target, attacker);
                 }
+
                 @Override
-                public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> TooltipComponent
-                    , TooltipFlag tooltipFlag){
-                    TooltipComponent.add(Component.translatable("tooltip.herosmpmod.fiery_sword.tooltip"));
-                    super.appendHoverText(stack, context,TooltipComponent, tooltipFlag);
+                public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+                                            java.util.List<Component> tooltip, TooltipFlag flag) {
+                    tooltip.add(Component.translatable("tooltip.herosmpmod.fiery_sword.tooltip"));
+                    super.appendHoverText(stack, context, tooltip, flag);
                 }
-               @Override
+
+                @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
+                    ItemStack stack = player.getItemInHand(hand);
+                    init(stack);
 
-                   ItemStack stack = player.getItemInHand(hand);
-
-                   if (!level.isClientSide) {
-                       CompoundTag tag = getTag(stack);
-                       tag.putBoolean("Charged", false);
-                       saveTag(stack, tag);
-
-                       if (tag.getBoolean(NBT_CHARGED)) {
-                           tag.putBoolean(NBT_TRIGGER, true);
-                           tag.putBoolean(NBT_CHARGED, false);
-                           tag.putInt(NBT_COOLDOWN, 0);
-                       }
-                   }
-
-                   return InteractionResult.SUCCESS;
-               }
-
-            }
-    );
+                    if (!level.isClientSide) {
+                        CompoundTag tag = getTag(stack);
+                        if (tag.getBoolean(NBT_CHARGED)) {
+                            tag.putBoolean(NBT_TRIGGER, true);
+                            tag.putBoolean(NBT_CHARGED, false);
+                            tag.putInt(NBT_COOLDOWN, 0);
+                            saveTag(stack, tag);
+                        }
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            });
     public static final DeferredItem<SwordItem> TITAN_HAMMA = ITEMS.register("titan_hama",
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:titan_hama")))) {
