@@ -143,60 +143,39 @@ public class ModItems {
                     }
                     return InteractionResult.SUCCESS;
                 }
-            });
-    public static final DeferredItem<SwordItem> TITAN_HAMMA = ITEMS.register("titan_hama",
-            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
-                    .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:titan_hama")))) {
-                private CompoundTag getTag(ItemStack stack) {
-                CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-                return data == null ? new CompoundTag() : data.copyTag();
             }
-                //this took fucking ages to rewrite in nbt data im just using fuckin chatgpt for the next one
-                //the BattleBlock Theater Music - Level Editor #1 was my best help while doing this
+            );
+    public static final DeferredItem<SwordItem> TITAN_HAMMA = ITEMS.register("titan_hama",
+            () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3,
+                    new Item.Properties()
+                            .useItemDescriptionPrefix()
+                            .setId(ResourceKey.create(Registries.ITEM,
+                                    ResourceLocation.parse("herosmpmod:titan_hama")))) {
+
+                private CompoundTag getTag(ItemStack stack) {
+                    CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+                    return data == null ? new CompoundTag() : data.copyTag();
+                }
+
                 private void saveTag(ItemStack stack, CompoundTag tag) {
                     stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
                 }
-
-                private boolean getAbility(ItemStack stack) {
-                    return getTag(stack).getBoolean("ability");
-                }
-
-                private void setAbility(ItemStack stack, boolean value) {
+                //every day we are closer to a gloabl war
+                private void init(ItemStack stack) {
                     CompoundTag tag = getTag(stack);
-                    tag.putBoolean("ability", value);
-                    saveTag(stack, tag);
+                    if (!tag.contains("ability")) {
+                        tag.putBoolean("ability", true);
+                        tag.putBoolean("charing", false);
+                        tag.putBoolean("activated", false);
+                        tag.putInt("timer", 0);
+                        saveTag(stack, tag);
+                    }
                 }
 
-                private boolean getCharing(ItemStack stack) {
-                    return getTag(stack).getBoolean("charing");
+                @Override
+                public boolean isBarVisible(ItemStack stack) {
+                    return false;
                 }
-
-                private void setCharing(ItemStack stack, boolean value) {
-                    CompoundTag tag = getTag(stack);
-                    tag.putBoolean("charing", value);
-                    saveTag(stack, tag);
-                }
-
-                private boolean getActivated(ItemStack stack) {
-                    return getTag(stack).getBoolean("activated");
-                }
-
-                private void setActivated(ItemStack stack, boolean value) {
-                    CompoundTag tag = getTag(stack);
-                    tag.putBoolean("activated", value);
-                    saveTag(stack, tag);
-                }
-
-                private int getTimer(ItemStack stack) {
-                    return getTag(stack).getInt("timer");
-                }
-
-                private void setTimer(ItemStack stack, int value) {
-                    CompoundTag tag = getTag(stack);
-                    tag.putInt("timer", value);
-                    saveTag(stack, tag);
-                }
-
 
                 @Override
                 public void appendHoverText(ItemStack stack, Item.TooltipContext context,
@@ -205,70 +184,64 @@ public class ModItems {
                     super.appendHoverText(stack, context, tooltip, flag);
                 }
 
-
-                @Override
-                public boolean isBarVisible(ItemStack stack) {
-                    stack.setDamageValue(-1);
-                    return false;
-                }
-
-
                 @Override
                 public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+                    init(stack);
+                    CompoundTag tag = getTag(stack);
 
-                    if (getActivated(stack)) {
-                        setAbility(stack, false);
-                        setActivated(stack, false);
-                        setCharing(stack, true);
+                    if (tag.getBoolean("activated")) {
+                        tag.putBoolean("ability", false);
+                        tag.putBoolean("activated", false);
+                        tag.putBoolean("charing", true);
+                        saveTag(stack, tag);
 
-                        target.addEffect(new MobEffectInstance(
-                                MobEffects.MOVEMENT_SLOWDOWN, 3 * 20, 9999));
-                        target.addEffect(new MobEffectInstance(
-                                MobEffects.BLINDNESS, 3 * 20, 9999));
-                        target.addEffect(new MobEffectInstance(
-                                MobEffects.DARKNESS, 3 * 20, 9999));
+                        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 3 * 20, 9999));
+                        target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 3 * 20, 9999));
+                        target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 3 * 20, 9999));
                     }
 
                     return super.hurtEnemy(stack, target, attacker);
                 }
 
-
                 @Override
                 public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+                    if (!(entity instanceof Player player)) return;
+                    init(stack);
 
-                    if (getCharing(stack)) {
-                        if (getTimer(stack) != 400) {
-                            setTimer(stack, getTimer(stack) + 1);
-                        } else {
-                            setAbility(stack, true);
-                            setCharing(stack, false);
+                    CompoundTag tag = getTag(stack);
+
+                    if (tag.getBoolean("charing")) {
+                        int t = tag.getInt("timer") + 1;
+                        tag.putInt("timer", t);
+                        if (t >= 400) {
+                            tag.putBoolean("ability", true);
+                            tag.putBoolean("charing", false);
                         }
+                        saveTag(stack, tag);
                     }
 
-                    if (entity instanceof Player player) {
-                        boolean isInMainHand = player.getMainHandItem() == stack;
-                        if (isInMainHand) {
-                            player.addEffect(new MobEffectInstance(
-                                    MobEffects.MOVEMENT_SLOWDOWN, 0, 1));
-                        }
+                    if (player.getMainHandItem() == stack) {
+                        player.addEffect(new MobEffectInstance(
+                                MobEffects.MOVEMENT_SLOWDOWN, 1, 1));
                     }
                 }
 
-
                 @Override
                 public InteractionResult use(Level level, Player player, InteractionHand hand) {
-
                     ItemStack stack = player.getItemInHand(hand);
+                    init(stack);
 
-                    if (getAbility(stack)) {
-                        setActivated(stack, true);
-                        setCharing(stack, true);
-                        setTimer(stack, 0);
+                    if (getTag(stack).getBoolean("ability")) {
+                        CompoundTag tag = getTag(stack);
+                        tag.putBoolean("activated", true);
+                        tag.putBoolean("charing", true);
+                        tag.putInt("timer", 0);
+                        saveTag(stack, tag);
                     }
-
                     return InteractionResult.SUCCESS;
-                }}
-    );
+                }
+            }
+            );
     public static final DeferredItem<SwordItem> P_DAGGER = ITEMS.register("poison_dagger",
             () -> new SwordItem(ModToolTiers.MATERIAL_FOR_ALL, 3f, -3, new Item.Properties()
                     .useItemDescriptionPrefix().setId(ResourceKey.create(Registries.ITEM, ResourceLocation.parse("herosmpmod:poison_dagger")))) {
